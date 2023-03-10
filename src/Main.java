@@ -1,6 +1,5 @@
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,23 +15,18 @@ public class Main {
                     Education.values()[new Random().nextInt(Education.values().length)])
             );
         }
-
-        Stream<Person> stream1 = persons.stream();
-        Stream<Person> stream2 = persons.stream();
-        Stream<Person> stream3 = persons.stream();
-        System.out.println(stream1.filter(person -> person.getAge() < 18).count());
-        List<Person> forArmy = stream2
-                .filter(person -> person.getAge() >= 18 && person.getAge() <= 27 && person.getSex().equals(Sex.MAN))
+        int count = (int) persons.stream()
+                .filter(person -> person.getAge() < 18)
+                .count();
+        List<Person> forArmy = persons.stream()
+                .filter(person -> person.getAge() >= 18)
+                .filter(person -> person.getAge() <= 27)
+                .filter(person -> person.getSex().equals(Sex.MAN))
                 .collect(Collectors.toList());
-        List<Person> forWork = stream3.filter(person -> {
-            if (person.getAge() >= 18) {
-                if (person.getSex().equals(Sex.MAN) && person.getAge() <= 65) {
-                    return true;
-                }
-                return person.getSex().equals(Sex.WOMAN) && person.getAge() <= 60;
-            } else {
-                return false;
-            }
-        }).filter(person -> person.getEducation().equals(Education.HIGHER)).collect(Collectors.toList());
+        List<Person> forWork = persons.stream()
+                .filter(person -> person.getEducation().equals(Education.HIGHER))
+                .filter(person -> person.getAge() >= 18)
+                .filter(p -> (p.getSex().equals(Sex.WOMAN) && p.getAge() < 60) || (p.getSex().equals(Sex.MAN) && p.getAge() < 65))
+                .collect(Collectors.toList());
     }
 }
